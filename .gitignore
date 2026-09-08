@@ -1,0 +1,15 @@
+node_modules/
+
+# ZET dev-server TLS pair. key.pem is a real private key and must never be
+# published; cert.pem is its partner and is useless alone. Both are
+# localhost-only self-signed files — regenerate them locally, see README.
+key.pem
+cert.pem
+
+# ZET tooling output
+ZET-debug.log
+*.log
+
+.DS_Store
+Thumbs.db
+.vscode/

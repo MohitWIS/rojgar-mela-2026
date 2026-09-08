@@ -1,0 +1,222 @@
+/* ==========================================================================
+   Rojgar — Design Tokens
+   --------------------------------------------------------------------------
+   Single source of truth for colour, type, space, radius, shadow, motion.
+   No raw hex values should appear outside this file.
+
+   Carried over from the NSDC Orbit token set so Rojgar reads as part of the
+   same family. Chart palettes were dropped (no charts here); a sector accent
+   set was added for the employer monograms.
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* ---- Brand (NSDC) ---------------------------------------------------- */
+  --brand-blue: #008ad2;
+  --brand-blue-deep: #0a509f;
+  --brand-lime: #aec90a;
+  --brand-green: #51b748;
+  --brand-red: #d73525;
+  --brand-ink: #444445;
+
+  /* Tri-colour accent bar shared across NSDC widgets */
+  --brand-bar: linear-gradient(
+    to right,
+    var(--brand-lime) 0 33.33%,
+    var(--brand-blue) 33.33% 66.66%,
+    var(--brand-red) 66.66% 100%
+  );
+
+  /* ---- Surfaces --------------------------------------------------------
+     A tinted page with white cards floating on it. #dbe7f5 is a light step
+     of the brand blue: it leaves white cards visibly raised while holding
+     14.9:1 for body text.                                                 */
+  /* Lightened from the Orbit value: the page now sits under a saturated
+     gradient hero, and the old #dbe7f5 competed with it. At this step white
+     cards still separate on border + shadow, and ink holds 16:1. */
+  --surface-page: #f0f4fa;
+  --surface-1: #ffffff;      /* cards */
+  --surface-2: #f4f7fd;      /* insets, dropzone, chips */
+  --surface-3: #e8eefb;      /* hover wash */
+  --surface-inverse: #101725;
+
+  /* Glass layer — the topbar and filter bar sit on this */
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-border: rgba(13, 18, 32, 0.10);
+  --glass-blur: 18px;
+
+  /* Scrim behind the modal */
+  --scrim: rgba(10, 20, 38, 0.52);
+
+  /* ---- Ink -------------------------------------------------------------
+     On the tinted page, muted ink drops to 2.9:1 — text sitting directly on
+     the page uses secondary. Muted stays for text inside white cards.      */
+  --ink-primary: #0d1220;
+  --ink-secondary: #4d5666;
+  --ink-muted: #7b8697;
+  --ink-inverse: #ffffff;
+  --ink-on-brand: #ffffff;
+
+  /* ---- Lines ----------------------------------------------------------- */
+  --line-hairline: rgba(13, 18, 32, 0.09);
+  --line-strong: rgba(13, 18, 32, 0.16);
+  --line-field: #cbd5e3;
+
+  /* ---- Sector accents --------------------------------------------------
+     One per sector, used for the employer monogram tile and the sector
+     label. Each is paired with a 12% tint so the monogram never relies on
+     white-on-light text.                                                   */
+  --sector-1: #0071bc;   /* IT-ITeS        */
+  --sector-2: #00997a;   /* Green jobs     */
+  --sector-3: #b5651d;   /* Logistics      */
+  --sector-4: #4a3aa7;   /* Electronics    */
+  --sector-5: #c2185b;   /* Beauty         */
+  --sector-6: #3d7a3d;   /* Agriculture    */
+  --sector-7: #7d3c98;   /* Apparel        */
+  --sector-8: #a6531c;   /* Automotive     */
+  --sector-9: #1a6aa6;   /* Retail         */
+  --sector-10: #8f1f1f;  /* Power          */
+
+  /* Companion hues, one per sector. Paired with --sector-N they make the
+     card's top strip and monogram a gradient rather than a flat block —
+     which is what gives a wall of cards its colour variety. */
+  --sector-1b: #00b4e6;
+  --sector-2b: #4fc08d;
+  --sector-3b: #e09547;
+  --sector-4b: #7b6ce0;
+  --sector-5b: #f06292;
+  --sector-6b: #6bbf59;
+  --sector-7b: #b06ad4;
+  --sector-8b: #d98a4a;
+  --sector-9b: #3fa3d9;
+  --sector-10b: #d14a4a;
+
+  /* Matching 12% tints for the monogram tile. Written out rather than
+     derived with color-mix() so the cards still render on older engines —
+     an unsupported color-mix() would make the custom property invalid at
+     computed-value time and drop the tile background entirely. */
+  --sector-1-bg: rgba(0, 113, 188, 0.12);
+  --sector-2-bg: rgba(0, 153, 122, 0.12);
+  --sector-3-bg: rgba(181, 101, 29, 0.12);
+  --sector-4-bg: rgba(74, 58, 167, 0.12);
+  --sector-5-bg: rgba(194, 24, 91, 0.12);
+  --sector-6-bg: rgba(61, 122, 61, 0.12);
+  --sector-7-bg: rgba(125, 60, 152, 0.12);
+  --sector-8-bg: rgba(166, 83, 28, 0.12);
+  --sector-9-bg: rgba(26, 106, 166, 0.12);
+  --sector-10-bg: rgba(143, 31, 31, 0.12);
+
+  /* ---- Hero ------------------------------------------------------------
+     The deep gradient band the page opens on. Ink on it is always white,
+     so every value here stays dark enough to clear 4.5:1 for body text. */
+  --hero-grad: linear-gradient(135deg, #063d7d 0%, #0a509f 38%, #008ad2 100%);
+  --hero-glow-1: rgba(174, 201, 10, 0.30);   /* lime, top-right   */
+  --hero-glow-2: rgba(0, 200, 232, 0.34);    /* cyan, bottom-left */
+  --hero-ink: #ffffff;
+  --hero-ink-soft: rgba(255, 255, 255, 0.80);
+  --hero-ink-faint: rgba(255, 255, 255, 0.62);
+  --hero-glass: rgba(255, 255, 255, 0.13);
+  --hero-glass-line: rgba(255, 255, 255, 0.24);
+
+  /* Primary action. The shine sweep on hover rides over this. */
+  --btn-grad: linear-gradient(135deg, #008ad2 0%, #0a509f 100%);
+  --btn-grad-hover: linear-gradient(135deg, #0a509f 0%, #063d7d 100%);
+
+  /* ---- Status ----------------------------------------------------------- */
+  --status-good: #0ca30c;
+  --status-good-ink: #0a6b0a;
+  --status-good-bg: rgba(12, 163, 12, 0.12);
+  --status-warning-ink: #8a5f00;
+  --status-warning-bg: rgba(250, 178, 25, 0.18);
+  --status-danger: #d03b3b;
+  --status-danger-ink: #a82c2c;
+  --status-danger-bg: rgba(208, 59, 59, 0.10);
+  --status-neutral-ink: #4d5666;
+  --status-neutral-bg: rgba(123, 134, 151, 0.12);
+
+  /* ---- Elevation ------------------------------------------------------- */
+  --shadow-xs: 0 1px 2px rgba(13, 18, 32, 0.05);
+  --shadow-sm: 0 1px 3px rgba(13, 18, 32, 0.07), 0 1px 2px rgba(13, 18, 32, 0.04);
+  --shadow-md: 0 4px 14px rgba(13, 18, 32, 0.08), 0 1px 3px rgba(13, 18, 32, 0.05);
+  --shadow-lg: 0 12px 32px rgba(13, 18, 32, 0.12), 0 2px 8px rgba(13, 18, 32, 0.06);
+  --shadow-xl: 0 24px 64px rgba(13, 18, 32, 0.20);
+  --ring-focus: 0 0 0 3px rgba(0, 138, 210, 0.35);
+  --ring-danger: 0 0 0 3px rgba(208, 59, 59, 0.25);
+
+  /* Lift used on card hover — a plain grey shadow reads flat against the
+     colour-coded cards, so this one carries a tint of the brand. */
+  --shadow-hover: 0 18px 40px rgba(10, 80, 159, 0.16),
+                  0 4px 12px rgba(13, 18, 32, 0.07);
+  --shadow-hero: 0 20px 50px rgba(6, 61, 125, 0.28);
+
+  /* ---- Typography ------------------------------------------------------ */
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+
+  --text-2xs: 0.6875rem; /* 11px */
+  --text-xs: 0.75rem;    /* 12px */
+  --text-sm: 0.8125rem;  /* 13px */
+  --text-base: 0.875rem; /* 14px */
+  --text-md: 1rem;       /* 16px */
+  --text-lg: 1.125rem;   /* 18px */
+  --text-xl: 1.375rem;   /* 22px */
+  --text-2xl: 1.75rem;   /* 28px */
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  --leading-tight: 1.2;
+  --leading-snug: 1.35;
+  --leading-normal: 1.55;
+
+  /* ---- Space (4px base) ------------------------------------------------ */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;   /* hero padding — the toolbar rides up into this */
+
+  /* ---- Radius ---------------------------------------------------------- */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-pill: 999px;
+
+  /* ---- Motion ---------------------------------------------------------- */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 360ms;
+
+  /* ---- Inline assets ----------------------------------------------------
+     Select chevron. Inlined as a token so the stroke colour stays tied to
+     --ink-muted in one place; a data URI cannot read a custom property.   */
+  --chevron-down: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%237b8697' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+
+  /* ---- Layout ---------------------------------------------------------- */
+  --topbar-height: 64px;
+  --content-max: 1360px;
+  --z-sticky: 20;
+  --z-modal: 70;
+  --z-toast: 80;
+}
+
+/* Respect the OS reduced-motion setting everywhere. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 1ms;
+    --duration-base: 1ms;
+    --duration-slow: 1ms;
+  }
+}

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Rojgar — NSDC</title>
+
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/widget.css">
+
+  <!-- JS API v2. Namespaces: DATA / META / FILE / PUBLISH / UTIL.
+       There is no ZOHO.CREATOR.init() in v2 — that was v1 only. -->
+  <script src="https://js.zohostatic.com/creator/widgets/version/2.0/widgetsdk-min.js"></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#jobs">Skip to job listings</a>
+
+  <div class="app">
+
+    <div class="brandbar" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand__mark" aria-hidden="true">रो</div>
+        <div class="brand__text">
+          <span class="brand__name">Rojgar</span>
+          <span class="brand__org">NSDC</span>
+        </div>
+      </div>
+
+      <div class="topbar__spacer"></div>
+
+      <div class="topbar__actions">
+        <button class="btn btn--secondary btn--sm" type="button">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+          </svg>
+          My applications
+        </button>
+      </div>
+    </header>
+
+    <!-- Gradient hero -->
+    <section class="hero">
+      <div class="hero__dots" aria-hidden="true"></div>
+
+      <div class="hero__inner">
+        <div class="hero__copy">
+          <div class="hero__eyebrow">
+            <span class="hero__eyebrow-dot" aria-hidden="true"></span>
+            Hiring now across India
+          </div>
+          <h1 class="hero__title">Find work that<br><em>works for you</em></h1>
+          <p class="hero__sub">
+            Verified openings from NSDC partner employers across every sector.
+            Apply in under a minute — all you need is your resume.
+          </p>
+        </div>
+
+        <div class="stats">
+          <div class="stat stat--lime">
+            <div class="stat__value" id="statOpen">—</div>
+            <div class="stat__label">Open positions</div>
+          </div>
+          <div class="stat stat--cyan">
+            <div class="stat__value" id="statEmployers">—</div>
+            <div class="stat__label">Employers</div>
+          </div>
+          <div class="stat stat--green">
+            <div class="stat__value" id="statNew">—</div>
+            <div class="stat__label">Added this week</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <main class="content">
+
+      <!-- Toolbar rides up over the hero's lower edge, so it comes first;
+           the sample-data banner sits below it, above the grid. -->
+      <div class="toolbar">
+        <div class="toolbar__row">
+          <div class="search">
+            <span class="search__icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+                stroke-linecap="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="8" />
+                <path d="M21 21l-4.35-4.35" />
+              </svg>
+            </span>
+            <input class="search__input" id="search" type="search" autocomplete="off"
+              placeholder="Search by role, employer, skill or city…" aria-label="Search jobs">
+            <button class="search__clear u-hide" id="searchClear" type="button" aria-label="Clear search">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" aria-hidden="true">
+                <path d="M18 6 6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <label class="u-visually-hidden" for="locationFilter">Filter by location</label>
+          <select class="select" id="locationFilter">
+            <option value="all">All locations</option>
+          </select>
+
+          <label class="u-visually-hidden" for="sortBy">Sort jobs</label>
+          <select class="select" id="sortBy">
+            <option value="recent">Most recent</option>
+            <option value="salary">Highest salary</option>
+            <option value="openings">Most openings</option>
+            <option value="closing">Closing soonest</option>
+          </select>
+        </div>
+
+        <div class="toolbar__row">
+          <div class="chips" id="chips" role="group" aria-label="Filter by employment type"></div>
+          <div class="toolbar__meta" id="resultCount"></div>
+        </div>
+      </div>
+
+      <!-- Shown when some job fields could not be matched to the report -->
+      <div class="mock-banner u-hide" id="mockBanner">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" aria-hidden="true">
+          <path d="M12 9v4m0 4h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" />
+        </svg>
+        <span id="bannerText"></span>
+      </div>
+
+      <!-- Job grid -->
+      <section class="jobs" id="jobs" aria-label="Job listings" aria-live="polite"></section>
+
+    </main>
+  </div>
+
+  <!-- ======================= Apply modal ======================= -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalJobTitle">
+    <div class="modal__panel" id="modalPanel">
+
+      <div class="modal__head">
+        <div class="modal__head-text">
+          <div class="modal__eyebrow">Apply for</div>
+          <h2 class="modal__title" id="modalJobTitle">Job title</h2>
+          <div class="modal__sub" id="modalJobMeta"></div>
+        </div>
+        <button class="modal__close" id="modalClose" type="button" aria-label="Close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" aria-hidden="true">
+            <path d="M18 6 6 18M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal__body" id="modalBody">
+        <form class="form-grid" id="applyForm" novalidate>
+
+          <div class="field" id="fullNameField">
+            <label class="field__label" for="fullName">Full name<span class="field__req">*</span></label>
+            <input class="field__control" id="fullName" name="fullName" type="text"
+              placeholder="As printed on your Aadhaar" autocomplete="name">
+            <div class="field__error"><span>Enter your full name.</span></div>
+          </div>
+
+          <div class="field" id="phoneField">
+            <label class="field__label" for="phone">Mobile number<span class="field__req">*</span></label>
+            <input class="field__control" id="phone" name="phone" type="tel" placeholder="98765 43210"
+              autocomplete="tel" inputmode="numeric">
+            <div class="field__error"><span>Enter a valid 10-digit mobile number.</span></div>
+          </div>
+
+          <div class="field" id="emailField">
+            <label class="field__label" for="email">Email address<span class="field__req">*</span></label>
+            <input class="field__control" id="email" name="email" type="email" placeholder="you@example.com"
+              autocomplete="email">
+            <div class="field__error"><span>Enter a valid email address.</span></div>
+          </div>
+
+          <div class="field" id="locationField">
+            <label class="field__label" for="location">Current location<span class="field__req">*</span></label>
+            <input class="field__control" id="location" name="location" type="text" placeholder="City, State"
+              autocomplete="address-level2">
+            <div class="field__error"><span>Tell us where you are based.</span></div>
+          </div>
+
+          <div class="field" id="experienceField">
+            <label class="field__label" for="experience">Total experience<span class="field__req">*</span></label>
+            <select class="field__control" id="experience" name="experience">
+              <option value="">Select experience</option>
+              <option>Fresher</option>
+              <option>Less than 1 year</option>
+              <option>1–2 years</option>
+              <option>2–5 years</option>
+              <option>5–10 years</option>
+              <option>More than 10 years</option>
+            </select>
+            <div class="field__error"><span>Select your experience.</span></div>
+          </div>
+
+          <div class="field" id="qualificationField">
+            <label class="field__label" for="qualification">Highest qualification<span
+                class="field__req">*</span></label>
+            <select class="field__control" id="qualification" name="qualification">
+              <option value="">Select qualification</option>
+              <option>Below 10th</option>
+              <option>10th Pass</option>
+              <option>12th Pass</option>
+              <option>ITI</option>
+              <option>Diploma</option>
+              <option>Graduate</option>
+              <option>Post Graduate</option>
+            </select>
+            <div class="field__error"><span>Select your highest qualification.</span></div>
+          </div>
+
+          <div class="field field--full" id="resumeField">
+            <label class="field__label" for="resumeInput">Resume<span class="field__req">*</span></label>
+
+            <div class="dropzone" id="dropzone">
+              <div class="dropzone__icon" aria-hidden="true">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <path d="M17 8l-5-5-5 5M12 3v13" />
+                </svg>
+              </div>
+              <div class="dropzone__title">Drop your resume here or <em>browse files</em></div>
+              <div class="dropzone__hint">PDF, DOC or DOCX · up to 5 MB</div>
+              <input class="dropzone__input" id="resumeInput" name="resume" type="file"
+                accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                aria-label="Upload resume">
+            </div>
+
+            <div class="filecard u-hide" id="fileCard">
+              <div class="filecard__icon" id="fileIcon" aria-hidden="true">PDF</div>
+              <div class="filecard__text">
+                <div class="filecard__name u-truncate" id="fileName"></div>
+                <div class="filecard__size" id="fileSize"></div>
+              </div>
+              <button class="filecard__remove" id="fileRemove" type="button" aria-label="Remove file">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" aria-hidden="true">
+                  <path d="M18 6 6 18M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div class="field__error"><span>Attach your resume to continue.</span></div>
+          </div>
+
+          <div class="field field--full">
+            <label class="field__label" for="coverNote">Why are you a good fit?</label>
+            <textarea class="field__control" id="coverNote" name="coverNote"
+              placeholder="Optional — a few lines about your experience and availability."></textarea>
+            <div class="field__hint">Optional, but employers read it.</div>
+          </div>
+
+        </form>
+      </div>
+
+      <div class="modal__foot" id="modalFoot">
+        <div class="modal__foot-note">Fields marked * are required.</div>
+        <button class="btn btn--secondary" id="cancelBtn" type="button">Cancel</button>
+        <button class="btn btn--primary" id="submitBtn" type="submit" form="applyForm">
+          Submit application
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ======================= Toasts ======================= -->
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/widget.js"></script>
+</body>
+
+</html>
