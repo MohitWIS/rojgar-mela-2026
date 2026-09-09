@@ -13,3 +13,9 @@ ZET-debug.log
 .DS_Store
 Thumbs.db
 .vscode/
+
+# Publish permalink keys. Each grants login-free read access to a
+# component — organisation contacts, and applicant names/emails/phones.
+# This repo is public, so they stay out of it. config.example.js is the
+# committed template; zet pack still includes the real file.
+app/js/config.js

@@ -34,14 +34,14 @@
       <div class="topbar__spacer"></div>
 
       <div class="topbar__actions">
-        <button class="btn btn--secondary btn--sm" type="button">
+        <a class="btn btn--secondary btn--sm" href="my-applications.html">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
             <circle cx="9" cy="7" r="4" />
           </svg>
-          My applications
-        </button>
+          Employer login
+        </a>
       </div>
     </header>
 
@@ -108,6 +108,11 @@
             <option value="all">All locations</option>
           </select>
 
+          <label class="u-visually-hidden" for="pincodeFilter">Filter by pincode</label>
+          <select class="select" id="pincodeFilter">
+            <option value="all">All pincodes</option>
+          </select>
+
           <label class="u-visually-hidden" for="sortBy">Sort jobs</label>
           <select class="select" id="sortBy">
             <option value="recent">Most recent</option>
@@ -146,6 +151,14 @@
         <div class="modal__head-text">
           <div class="modal__eyebrow">Apply for</div>
           <h2 class="modal__title" id="modalJobTitle">Job title</h2>
+          <div class="modal__org">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 21h18M5 21V7l7-4 7 4v14" />
+              <path d="M9 9h.01M15 9h.01M9 13h.01M15 13h.01M9 17h.01M15 17h.01" />
+            </svg>
+            <span id="modalOrgName"></span>
+          </div>
           <div class="modal__sub" id="modalJobMeta"></div>
         </div>
         <button class="modal__close" id="modalClose" type="button" aria-label="Close">
@@ -173,48 +186,11 @@
             <div class="field__error"><span>Enter a valid 10-digit mobile number.</span></div>
           </div>
 
-          <div class="field" id="emailField">
+          <div class="field field--full" id="emailField">
             <label class="field__label" for="email">Email address<span class="field__req">*</span></label>
             <input class="field__control" id="email" name="email" type="email" placeholder="you@example.com"
               autocomplete="email">
             <div class="field__error"><span>Enter a valid email address.</span></div>
-          </div>
-
-          <div class="field" id="locationField">
-            <label class="field__label" for="location">Current location<span class="field__req">*</span></label>
-            <input class="field__control" id="location" name="location" type="text" placeholder="City, State"
-              autocomplete="address-level2">
-            <div class="field__error"><span>Tell us where you are based.</span></div>
-          </div>
-
-          <div class="field" id="experienceField">
-            <label class="field__label" for="experience">Total experience<span class="field__req">*</span></label>
-            <select class="field__control" id="experience" name="experience">
-              <option value="">Select experience</option>
-              <option>Fresher</option>
-              <option>Less than 1 year</option>
-              <option>1–2 years</option>
-              <option>2–5 years</option>
-              <option>5–10 years</option>
-              <option>More than 10 years</option>
-            </select>
-            <div class="field__error"><span>Select your experience.</span></div>
-          </div>
-
-          <div class="field" id="qualificationField">
-            <label class="field__label" for="qualification">Highest qualification<span
-                class="field__req">*</span></label>
-            <select class="field__control" id="qualification" name="qualification">
-              <option value="">Select qualification</option>
-              <option>Below 10th</option>
-              <option>10th Pass</option>
-              <option>12th Pass</option>
-              <option>ITI</option>
-              <option>Diploma</option>
-              <option>Graduate</option>
-              <option>Post Graduate</option>
-            </select>
-            <div class="field__error"><span>Select your highest qualification.</span></div>
           </div>
 
           <div class="field field--full" id="resumeField">
@@ -252,13 +228,6 @@
             <div class="field__error"><span>Attach your resume to continue.</span></div>
           </div>
 
-          <div class="field field--full">
-            <label class="field__label" for="coverNote">Why are you a good fit?</label>
-            <textarea class="field__control" id="coverNote" name="coverNote"
-              placeholder="Optional — a few lines about your experience and availability."></textarea>
-            <div class="field__hint">Optional, but employers read it.</div>
-          </div>
-
         </form>
       </div>
 
@@ -276,6 +245,8 @@
   <!-- ======================= Toasts ======================= -->
   <div class="toasts" id="toasts" aria-live="polite"></div>
 
+  <!-- Local, untracked: Publish permalink keys. Absent on a signed-in page. -->
+  <script src="js/config.js"></script>
   <script src="js/data.js"></script>
   <script src="js/widget.js"></script>
 </body>

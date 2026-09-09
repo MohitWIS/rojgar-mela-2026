@@ -40,6 +40,7 @@
     query: '',
     type: 'all',
     location: 'all',
+    pincode: 'all',
     sort: 'recent',
     applied: {},        // jobId → reference, for this session only
     saved: {},          // jobId → true, bookmark toggle, session only
@@ -55,9 +56,9 @@
   function cacheElements() {
     [
       'mockBanner', 'jobs', 'search', 'searchClear', 'chips', 'locationFilter',
-      'sortBy', 'resultCount', 'statOpen', 'statEmployers', 'statNew',
+      'pincodeFilter', 'sortBy', 'resultCount', 'statOpen', 'statEmployers', 'statNew',
       'bannerText',
-      'modal', 'modalPanel', 'modalJobTitle', 'modalJobMeta', 'modalClose',
+      'modal', 'modalPanel', 'modalJobTitle', 'modalOrgName', 'modalJobMeta', 'modalClose',
       'modalBody', 'modalFoot', 'applyForm', 'submitBtn', 'cancelBtn',
       'dropzone', 'resumeInput', 'fileCard', 'fileIcon', 'fileName', 'fileSize',
       'fileRemove', 'resumeField', 'toasts'
@@ -125,6 +126,10 @@
     if (!words.length) return '?';
     if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
     return (words[0][0] + words[1][0]).toUpperCase();
+  }
+
+  function pincodeOf(job) {
+    return String((job.address && job.address.pin) || '').trim();
   }
 
   /* Groups the location filter. Prefers the real State column; falls back to
@@ -327,6 +332,7 @@
     var rows = state.jobs.filter(function (job) {
       if (state.type !== 'all' && job.type !== state.type) return false;
       if (state.location !== 'all' && regionOf(job) !== state.location) return false;
+      if (state.pincode !== 'all' && pincodeOf(job) !== state.pincode) return false;
       if (!q) return true;
 
       // addressText covers every address column, so a search for a pin code,
@@ -389,6 +395,40 @@
         return '<option value="' + escapeHtml(s) + '">' + escapeHtml(s) + '</option>';
       }).join('');
     el.locationFilter.value = state.location;
+
+    renderPincodeOptions();
+  }
+
+  /* The pincode list is scoped to whatever state is selected, so the two
+     filters can never be combined into an empty result. It is rebuilt
+     whenever the state changes, and the current choice is dropped if it no
+     longer exists in that scope. Hidden entirely when the report carries no
+     pincodes at all, rather than offering a control that does nothing. */
+  function renderPincodeOptions() {
+    var anyPincode = state.jobs.some(function (job) { return pincodeOf(job); });
+    el.pincodeFilter.classList.toggle('u-hide', !anyPincode);
+    if (!anyPincode) {
+      state.pincode = 'all';
+      return;
+    }
+
+    var scoped = state.jobs.filter(function (job) {
+      return state.location === 'all' || regionOf(job) === state.location;
+    });
+
+    var pins = scoped.map(pincodeOf)
+      .filter(function (v, i, arr) { return v && arr.indexOf(v) === i; })
+      .sort(function (a, b) {
+        return a.localeCompare(b, undefined, { numeric: true });
+      });
+
+    if (pins.indexOf(state.pincode) === -1) state.pincode = 'all';
+
+    el.pincodeFilter.innerHTML = '<option value="all">All pincodes</option>' +
+      pins.map(function (p) {
+        return '<option value="' + escapeHtml(p) + '">' + escapeHtml(p) + '</option>';
+      }).join('');
+    el.pincodeFilter.value = state.pincode;
   }
 
   function renderStats() {
@@ -417,9 +457,14 @@
     state.lastFocused = document.activeElement;
 
     el.modalJobTitle.textContent = job.title;
+
+    /* The employer gets its own line — it comes from the Provider_ID lookup
+       and is the thing an applicant most wants confirmed before submitting. */
+    el.modalOrgName.textContent = job.employer || '—';
+
     // The full address here, not the short label — this is the point at which
     // someone decides whether the place is actually reachable for them.
-    el.modalJobMeta.textContent = [job.employer, job.type, job.addressText || job.location]
+    el.modalJobMeta.textContent = [job.type, job.addressText || job.location]
       .filter(Boolean).join('  ·  ');
 
     // Give the dialog header the same sector gradient as the card it came from.
@@ -449,9 +494,10 @@
   }
 
   function resetForm() {
-    // Drop the success panel left behind by a previous application.
-    var previous = el.modalBody.querySelector('.success');
-    if (previous) previous.remove();
+    // Drop anything a previous open left behind: a success panel, or the
+    // embedded Creator form (which would otherwise keep its old prefill).
+    var stale = el.modalBody.querySelectorAll('.success');
+    Array.prototype.forEach.call(stale, function (node) { node.remove(); });
 
     el.applyForm.reset();
     el.applyForm.classList.remove('u-hide');
@@ -556,11 +602,6 @@
       fail('phoneField', 'Enter a valid 10-digit mobile number.');
     }
 
-    if (!val('location')) fail('locationField', 'Tell us where you are based.');
-    if (!val('experience')) fail('experienceField', 'Select your experience.');
-    if (!val('qualification')) {
-      fail('qualificationField', 'Select your highest qualification.');
-    }
     if (!state.resumeFile) fail('resumeField', 'Attach your resume to continue.');
 
     if (firstBad) {
@@ -581,19 +622,20 @@
     setSubmitting(true);
 
     RojgarAPI.submitApplication({
+      /* Job_Title and Organization_Name on Apply_For_Job are LOOKUPS, so
+         they are written with these record IDs, not the display strings.
+         The strings are still passed for the confirmation message. */
       jobId: job.id,
+      employerId: job.employerId,
       jobTitle: job.title,
+      orgName: job.employer,
       fullName: val('fullName'),
       email: val('email'),
       phone: val('phone'),
-      location: val('location'),
-      experience: val('experience'),
-      qualification: val('qualification'),
-      coverNote: val('coverNote'),
       resume: state.resumeFile
     }).then(function (result) {
       state.applied[job.id] = result.reference;
-      showSuccess(job, result.reference);
+      showSuccess(job, result);
       render();
       toast('Application submitted for ' + job.title + '.', 'good');
     })['catch'](function (error) {
@@ -603,7 +645,7 @@
     });
   }
 
-  function showSuccess(job, reference) {
+  function showSuccess(job, result) {
     el.applyForm.classList.add('u-hide');
     el.modalFoot.classList.add('u-hide');
 
@@ -617,7 +659,7 @@
       '<p class="success__text">Your application for <strong>' +
         escapeHtml(job.title) + '</strong> at ' + escapeHtml(job.employer) +
         ' has been received. The employer will reach out on the number you shared.</p>' +
-      '<div class="success__ref">Reference ' + escapeHtml(reference) + '</div>' +
+      '<div class="success__ref">Reference ' + escapeHtml(result.reference) + '</div>' +
       '<button class="btn btn--primary" type="button" data-close-modal>Browse more jobs</button>';
 
     el.modalBody.appendChild(panel);
@@ -670,9 +712,10 @@
         state.query = '';
         state.type = 'all';
         state.location = 'all';
+        state.pincode = 'all';
         el.search.value = '';
         el.locationFilter.value = 'all';
-        renderFilters();
+        renderFilters();   // rebuilds the pincode list too
         render();
       }
     });
@@ -701,6 +744,13 @@
 
     el.locationFilter.addEventListener('change', function () {
       state.location = el.locationFilter.value;
+      // Narrowing the state can invalidate the chosen pincode, so rebuild.
+      renderPincodeOptions();
+      render();
+    });
+
+    el.pincodeFilter.addEventListener('change', function () {
+      state.pincode = el.pincodeFilter.value;
       render();
     });
 

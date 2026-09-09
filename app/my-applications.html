@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Applicants — Rojgar</title>
+
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/widget.css">
+
+  <!-- JS API v2. Namespaces: DATA / META / FILE / PUBLISH / UTIL.
+       There is no ZOHO.CREATOR.init() in v2 — that was v1 only. -->
+  <script src="https://js.zohostatic.com/creator/widgets/version/2.0/widgetsdk-min.js"></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#panel">Skip to content</a>
+
+  <div class="app">
+
+    <div class="brandbar" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand__mark" aria-hidden="true">रो</div>
+        <div class="brand__text">
+          <span class="brand__name">Rojgar</span>
+          <span class="brand__org">NSDC</span>
+        </div>
+      </div>
+
+      <div class="topbar__spacer"></div>
+
+      <div class="topbar__actions">
+        <a class="btn btn--secondary btn--sm" href="widget.html">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M19 12H5M11 18l-6-6 6-6" />
+          </svg>
+          Browse jobs
+        </a>
+      </div>
+    </header>
+
+    <!-- Gradient hero -->
+    <section class="hero hero--compact">
+      <div class="hero__dots" aria-hidden="true"></div>
+
+      <div class="hero__inner">
+        <div class="hero__copy">
+          <div class="hero__eyebrow">
+            <span class="hero__eyebrow-dot" aria-hidden="true"></span>
+            For employers
+          </div>
+          <h1 class="hero__title">Who applied to <em>your jobs</em></h1>
+          <p class="hero__sub">
+            Sign in with your organisation's registered email and mobile number
+            to see every candidate who has applied to your openings.
+          </p>
+        </div>
+
+        <div class="stats u-hide" id="statsRow">
+          <div class="stat stat--lime">
+            <div class="stat__value" id="statApplicants">—</div>
+            <div class="stat__label">Applicants</div>
+          </div>
+          <div class="stat stat--cyan">
+            <div class="stat__value" id="statRoles">—</div>
+            <div class="stat__label">Roles applied to</div>
+          </div>
+          <div class="stat stat--green">
+            <div class="stat__value" id="statWeek">—</div>
+            <div class="stat__label">This week</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <main class="content" id="panel">
+
+      <!-- ============ 1. Employer sign-in ============ -->
+      <section class="lookup" id="lookupCard">
+        <div class="lookup__head">
+          <div class="lookup__icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 21h18M5 21V7l7-4 7 4v14" />
+              <path d="M9 9h.01M15 9h.01M9 13h.01M15 13h.01M9 17h.01M15 17h.01" />
+            </svg>
+          </div>
+          <div>
+            <h2 class="lookup__title">Organisation sign-in</h2>
+            <p class="lookup__sub">
+              Use the email and mobile number registered against your organisation.
+              Both must match.
+            </p>
+          </div>
+        </div>
+
+        <form class="lookup__form" id="lookupForm" novalidate>
+          <div class="field" id="lookupEmailField">
+            <label class="field__label" for="lookupEmail">Registered email<span class="field__req">*</span></label>
+            <input class="field__control" id="lookupEmail" name="lookupEmail" type="email"
+              placeholder="hr@yourcompany.in" autocomplete="email">
+            <div class="field__error"><span>Enter a valid email address.</span></div>
+          </div>
+
+          <div class="field" id="lookupMobileField">
+            <label class="field__label" for="lookupMobile">Registered mobile<span class="field__req">*</span></label>
+            <input class="field__control" id="lookupMobile" name="lookupMobile" type="tel" placeholder="98765 43210"
+              autocomplete="tel" inputmode="numeric">
+            <div class="field__error"><span>Enter a valid 10-digit mobile number.</span></div>
+          </div>
+
+          <button class="btn btn--primary lookup__submit" id="lookupSubmit" type="submit">
+            View applicants
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </button>
+        </form>
+
+        <p class="lookup__note">
+          Only applications to your own openings are shown. Both details must
+          match your organisation's record.
+        </p>
+      </section>
+
+      <!-- ============ 2. Applicants ============ -->
+      <section class="results u-hide" id="resultsSection" aria-live="polite">
+
+        <div class="orgbar" id="orgBar">
+          <div class="orgbar__mark" id="orgMark" aria-hidden="true"></div>
+          <div class="orgbar__text">
+            <h2 class="orgbar__name" id="orgName">Organisation</h2>
+            <p class="orgbar__meta" id="orgMeta"></p>
+          </div>
+          <button class="btn btn--secondary btn--sm" id="changeDetails" type="button">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M16 17l5-5-5-5M21 12H9M13 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8" />
+            </svg>
+            Sign out
+          </button>
+        </div>
+
+        <div class="toolbar toolbar--flat u-hide" id="filterBar">
+          <div class="toolbar__row">
+            <div class="search">
+              <span class="search__icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+                  stroke-linecap="round" aria-hidden="true">
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="M21 21l-4.35-4.35" />
+                </svg>
+              </span>
+              <input class="search__input" id="search" type="search" autocomplete="off"
+                placeholder="Search applicants by name, email or number…" aria-label="Search applicants">
+            </div>
+
+            <label class="u-visually-hidden" for="roleFilter">Filter by role</label>
+            <select class="select" id="roleFilter">
+              <option value="all">All roles</option>
+            </select>
+
+            <div class="toolbar__meta" id="resultCount"></div>
+          </div>
+        </div>
+
+        <div class="applicants" id="applicants"></div>
+      </section>
+
+    </main>
+  </div>
+
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+
+  <!-- Local, untracked: Publish permalink keys. Absent on a signed-in page. -->
+  <script src="js/config.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/my-applications.js"></script>
+</body>
+
+</html>

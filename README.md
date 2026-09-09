@@ -34,10 +34,10 @@ Set at the top of [`app/js/data.js`](app/js/data.js):
 | `jobsForm` | `Job_Openings` | used by `META.getFields` for field metadata |
 | `jobsReport` | `All_Job_Openings` | the records |
 | `jobsCriteria` | *(empty)* | a criteria naming a missing field is a hard error |
-| `providersReport` | *(auto)* | discovered from the app's report list |
-| `applicationForm` | **unset** | required before Apply works |
-| `applicationsReport` | **unset** | required — uploads target a report, not a form |
-| `resumeField` | `Resume` | the File upload field's link name |
+| `providersReport` | `All_Details` | employer records |
+| `providerNameField` | `Organization_Name` | the employer name column |
+| `applicationForm` | `Apply_For_Job` | applications are created here |
+| `applicationsReport` | `Apply_For_Job_Report` | the resume uploads here — a report, not a form |
 
 ### Field mapping
 
@@ -55,10 +55,36 @@ To pin a field and stop the guessing, add it to `FIELD_MAP`.
 ### Employer names
 
 The employer is a `Provider_ID` lookup. Creator returns a lookup as
-`{ zc_display_value, ID }`, and the display value is frequently just the ID
-again — so the widget fetches the providers report and joins
-`Organization_Name` on ID. That second fetch is skipped when the lookup
-already carries a real name.
+`{ zc_display_value, ID }`, and what the display value holds varies — it may
+be the Creator record ID, the provider's own code (`ORG-008`), or the
+organisation name. There is no way to tell which by looking at it, so the
+widget always fetches `All_Details` and indexes providers under **both** the
+record ID and the `Provider_ID` code, then joins on whichever matches. A job
+whose reference matches nothing keeps what the lookup gave it.
+
+### Submitting an application
+
+Two calls, because a File upload field cannot be set through `addRecords`:
+
+1. `DATA.addRecords` → `Apply_For_Job` with `Organization_Name`, `Job_Title`,
+   `Name`, `Contact_Number`, `Email`
+2. `FILE.uploadFile` → `Apply_For_Job_Report` with the new record's ID and
+   `Upload_Resume`
+
+`Job_Title` and `Organization_Name` are **lookups**, into `Job_Openings` and
+the provider form respectively. A lookup is written by sending the referenced
+record's **ID**, not its display text — so the submit payload carries
+`jobId` and `employerId`, and the readable strings are used only in the
+confirmation message. When a job has no provider reference the lookup is
+omitted rather than filled with text, which would store a dangling
+reference. `APPLICATION_LOOKUP_FIELDS` in `data.js` is the list.
+
+Those link names are pinned in `APPLICATION_FIELD_MAP` and are used whatever
+`META.getFields` reports, so a failed metadata call cannot block a
+submission. If `Name` turns out to be a Creator *Name* field (composite
+first/last) rather than plain text, the first write fails and is retried once
+with `{ first_name, last_name }` — set `applicantNameIsNameField: true` to
+skip straight to that.
 
 ## Running locally
 
@@ -90,7 +116,8 @@ live data, register the widget in Creator pointing at the dev-server URL, or
 - [x] Job cards from `All_Job_Openings`, paged past 1000 via `record_cursor`
 - [x] Employer names joined through the `Provider_ID` lookup
 - [x] Search, employment-type filter, state filter, sorting
-- [x] Apply modal with validation and resume upload (PDF/DOC/DOCX, 5 MB)
-- [ ] Application form/report link names — Apply reports a clear error until set
+- [x] Pincode filter, cascading with the state filter
+- [x] Apply modal — name, mobile, email and resume — saving to
+      `Apply_For_Job` / `Apply_For_Job_Report`
 - [ ] Confirm whether `Monthly_Salary_*_years` are monthly or annual; cards
       currently label them "per month"
