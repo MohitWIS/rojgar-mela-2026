@@ -107,12 +107,25 @@
   --sector-9-bg: rgba(26, 106, 166, 0.12);
   --sector-10-bg: rgba(143, 31, 31, 0.12);
 
+  /* 28% versions for the card's hover shadow and the bloom on its cover —
+     strong enough to read as the sector's colour, not a grey lift. */
+  --sector-1-glow: rgba(0, 113, 188, 0.28);
+  --sector-2-glow: rgba(0, 153, 122, 0.28);
+  --sector-3-glow: rgba(181, 101, 29, 0.28);
+  --sector-4-glow: rgba(74, 58, 167, 0.28);
+  --sector-5-glow: rgba(194, 24, 91, 0.28);
+  --sector-6-glow: rgba(61, 122, 61, 0.28);
+  --sector-7-glow: rgba(125, 60, 152, 0.28);
+  --sector-8-glow: rgba(166, 83, 28, 0.28);
+  --sector-9-glow: rgba(26, 106, 166, 0.28);
+  --sector-10-glow: rgba(143, 31, 31, 0.28);
+
   /* ---- Hero ------------------------------------------------------------
      The deep gradient band the page opens on. Ink on it is always white,
      so every value here stays dark enough to clear 4.5:1 for body text. */
-  --hero-grad: linear-gradient(135deg, #063d7d 0%, #0a509f 38%, #008ad2 100%);
-  --hero-glow-1: rgba(174, 201, 10, 0.30);   /* lime, top-right   */
-  --hero-glow-2: rgba(0, 200, 232, 0.34);    /* cyan, bottom-left */
+  --hero-grad: linear-gradient(128deg, #052f63 0%, #0a509f 40%, #0a8fd6 76%, #12b0e3 100%);
+  --hero-glow-1: rgba(174, 201, 10, 0.34);   /* lime, top-right   */
+  --hero-glow-2: rgba(0, 200, 232, 0.38);    /* cyan, bottom-left */
   --hero-ink: #ffffff;
   --hero-ink-soft: rgba(255, 255, 255, 0.80);
   --hero-ink-faint: rgba(255, 255, 255, 0.62);
@@ -151,7 +164,10 @@
   --shadow-hero: 0 20px 50px rgba(6, 61, 125, 0.28);
 
   /* ---- Typography ------------------------------------------------------ */
-  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+  /* Plus Jakarta Sans is loaded from Google Fonts by each page. If Creator's
+     widget CSP ever blocks it, the system stack takes over and nothing else
+     changes — no layout depends on the metrics of the web font. */
+  --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
     Arial, sans-serif;
 
   --text-2xs: 0.6875rem; /* 11px */
@@ -167,6 +183,7 @@
   --weight-medium: 500;
   --weight-semibold: 600;
   --weight-bold: 700;
+  --weight-extrabold: 800;
 
   --leading-tight: 1.2;
   --leading-snug: 1.35;
@@ -188,8 +205,8 @@
   --radius-xs: 4px;
   --radius-sm: 6px;
   --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 20px;
+  --radius-lg: 16px;
+  --radius-xl: 22px;
   --radius-pill: 999px;
 
   /* ---- Motion ---------------------------------------------------------- */

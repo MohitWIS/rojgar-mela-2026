@@ -33,6 +33,21 @@
     'Power': 10
   };
 
+  /* Real data carries sectors this map has never heard of — Hospitality,
+     Healthcare, Construction — and they all used to fall to slot 1, so a
+     grid of unknown sectors came out uniformly blue. Unknown names now hash
+     to a slot instead: stable per sector, spread across the palette. */
+  function sectorSlot(sector) {
+    if (SECTOR_ACCENT[sector]) return SECTOR_ACCENT[sector];
+    var name = String(sector || '').trim().toLowerCase();
+    if (!name) return 1;
+    var hash = 0;
+    for (var i = 0; i < name.length; i++) {
+      hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
+    }
+    return (hash % 10) + 1;
+  }
+
   /* ---- State ------------------------------------------------------------ */
 
   var state = {
@@ -218,7 +233,7 @@
   }
 
   function jobCard(job, index) {
-    var slot = SECTOR_ACCENT[job.sector] || 1;
+    var slot = sectorSlot(job.sector);
     var isApplied = Object.prototype.hasOwnProperty.call(state.applied, job.id);
     var isSaved = !!state.saved[job.id];
     var flags = badgesFor(job);
@@ -236,6 +251,7 @@
       '--job-accent:var(--sector-' + slot + ');' +
       '--job-accent-2:var(--sector-' + slot + 'b);' +
       '--job-accent-bg:var(--sector-' + slot + '-bg);' +
+      '--job-accent-glow:var(--sector-' + slot + '-glow);' +
       '--i:' + index + ';';
 
     return '' +
@@ -468,7 +484,7 @@
       .filter(Boolean).join('  ·  ');
 
     // Give the dialog header the same sector gradient as the card it came from.
-    var slot = SECTOR_ACCENT[job.sector] || 1;
+    var slot = sectorSlot(job.sector);
     el.modalPanel.style.setProperty('--job-accent', 'var(--sector-' + slot + ')');
     el.modalPanel.style.setProperty('--job-accent-2', 'var(--sector-' + slot + 'b)');
 

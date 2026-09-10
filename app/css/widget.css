@@ -12,6 +12,13 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  /* A faint continuation of the hero's colours under the top of the grid,
+     plus a very light dot field. Both only show in the gaps between cards,
+     which is what makes the white cards read as floating. */
+  background:
+    radial-gradient(1100px 540px at 6% 540px, rgba(0, 138, 210, 0.13), transparent 62%),
+    radial-gradient(900px 520px at 94% 480px, rgba(174, 201, 10, 0.12), transparent 62%),
+    radial-gradient(rgba(13, 18, 32, 0.045) 1px, transparent 1px) 0 0 / 26px 26px;
 }
 
 .brandbar {
@@ -105,7 +112,7 @@
   background: var(--hero-grad);
   color: var(--hero-ink);
   /* Bottom padding leaves room for the toolbar, which rides up into it. */
-  padding: var(--space-10) 0 var(--space-16);
+  padding: var(--space-12) 0 var(--space-16);
 }
 
 /* Two soft colour blooms + a dot field, all pure CSS. They sit behind the
@@ -120,30 +127,38 @@
 }
 
 .hero::before {
-  width: 380px;
-  height: 380px;
-  top: -170px;
-  right: -60px;
+  width: 480px;
+  height: 480px;
+  top: -220px;
+  right: -80px;
   background: var(--hero-glow-1);
 }
 
 .hero::after {
-  width: 460px;
-  height: 460px;
-  bottom: -260px;
-  left: -110px;
+  width: 560px;
+  height: 560px;
+  bottom: -320px;
+  left: -140px;
   background: var(--hero-glow-2);
 }
 
+/* Depth layer: three concentric rings behind the stat tiles, a diagonal
+   light streak, and the dot field. All one element, all pure CSS, fading
+   towards the bottom so the toolbar's overlap stays clean. */
 .hero__dots {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.5;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.16) 1px, transparent 1px);
-  background-size: 22px 22px;
-  mask-image: linear-gradient(to bottom, #000 0%, transparent 78%);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 78%);
+  opacity: 0.9;
+  background-image:
+    radial-gradient(circle at 80% 34%, transparent 118px, rgba(255, 255, 255, 0.12) 119px, rgba(255, 255, 255, 0.12) 121px, transparent 122px),
+    radial-gradient(circle at 80% 34%, transparent 184px, rgba(255, 255, 255, 0.08) 185px, rgba(255, 255, 255, 0.08) 187px, transparent 188px),
+    radial-gradient(circle at 80% 34%, transparent 252px, rgba(255, 255, 255, 0.05) 253px, rgba(255, 255, 255, 0.05) 255px, transparent 256px),
+    linear-gradient(112deg, transparent 40%, rgba(255, 255, 255, 0.075) 50%, transparent 60%),
+    radial-gradient(rgba(255, 255, 255, 0.16) 1px, transparent 1px);
+  background-size: auto, auto, auto, auto, 22px 22px;
+  mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.35) 100%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.35) 100%);
 }
 
 .hero__inner {
@@ -196,10 +211,10 @@
 }
 
 .hero__title {
-  font-size: clamp(2rem, 4vw, 3rem);
-  font-weight: var(--weight-bold);
-  line-height: 1.08;
-  letter-spacing: -0.03em;
+  font-size: clamp(2.25rem, 4.4vw, 3.4rem);
+  font-weight: var(--weight-extrabold);
+  line-height: 1.06;
+  letter-spacing: -0.035em;
   color: var(--hero-ink);
 }
 
@@ -231,8 +246,11 @@
 
 .stat {
   position: relative;
-  min-width: 130px;
-  padding: var(--space-4) var(--space-5);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 160px;
+  padding: var(--space-4) var(--space-5) var(--space-4) var(--space-4);
   background: var(--hero-glass);
   border: 1px solid var(--hero-glass-line);
   border-radius: var(--radius-lg);
@@ -242,6 +260,20 @@
   transition: transform var(--duration-base) var(--ease-out),
               background var(--duration-base) var(--ease-out);
 }
+
+.stat__icon {
+  flex: none;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: var(--hero-ink);
+}
+
+.stat__text { min-width: 0; }
 
 .stat:hover { transform: translateY(-2px); background: rgba(255, 255, 255, 0.19); }
 
@@ -455,8 +487,8 @@
 
 .jobs {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(344px, 1fr));
-  gap: var(--space-5);
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: var(--space-6);
 }
 
 /* ==========================================================================
@@ -468,9 +500,10 @@
   display: flex;
   flex-direction: column;
   background: var(--surface-1);
-  border: 1px solid var(--line-hairline);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(13, 18, 32, 0.07);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 1px 2px rgba(13, 18, 32, 0.04),
+              0 10px 28px -14px rgba(13, 18, 32, 0.14);
   overflow: hidden;
   transition: transform var(--duration-base) var(--ease-out),
               box-shadow var(--duration-base) var(--ease-out),
@@ -492,48 +525,76 @@
   content: "";
   position: absolute;
   inset: 0 0 auto 0;
-  height: 4px;
+  z-index: 2;
+  height: 5px;
   background: linear-gradient(90deg, var(--job-accent), var(--job-accent-2));
   transition: height var(--duration-base) var(--ease-out);
 }
 
 .job:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-hover);
+  transform: translateY(-6px);
+  /* The lift takes the card's own sector colour rather than a grey shadow. */
+  box-shadow: 0 26px 48px -18px var(--job-accent-glow, rgba(10, 80, 159, 0.22)),
+              0 6px 14px rgba(13, 18, 32, 0.06);
   border-color: transparent;
 }
 
 .job:hover::before { height: 7px; }
 
+/* The head is a sector-tinted "cover": a soft wash that fades into the
+   card, with a coloured bloom in the corner. This is what makes a grid of
+   cards read as varied instead of a wall of identical white boxes. */
 .job__head {
+  position: relative;
   display: flex;
   align-items: flex-start;
   gap: var(--space-3);
-  padding: var(--space-5) var(--space-4) var(--space-3);
+  padding: var(--space-5) var(--space-4) var(--space-4);
+  background: linear-gradient(180deg, var(--job-accent-bg) 0%, rgba(255, 255, 255, 0) 100%);
+  overflow: hidden;
+}
+
+.job__head::after {
+  content: "";
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  top: -100px;
+  right: -64px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--job-accent-glow, var(--job-accent-bg)), transparent);
+  pointer-events: none;
+}
+
+/* Lift the head's real content above the decorative bloom. */
+.job__head > * {
+  position: relative;
+  z-index: 1;
 }
 
 .job__logo {
   flex: none;
-  width: 48px;
-  height: 48px;
+  width: 54px;
+  height: 54px;
   display: grid;
   place-items: center;
-  border-radius: var(--radius-md);
+  border-radius: 15px;
   background: linear-gradient(135deg, var(--job-accent), var(--job-accent-2));
   color: #fff;
-  font-size: var(--text-md);
-  font-weight: var(--weight-bold);
+  font-size: 1.05rem;
+  font-weight: var(--weight-extrabold);
   letter-spacing: -0.01em;
-  box-shadow: 0 4px 10px var(--job-accent-glow, rgba(13, 18, 32, 0.12));
+  box-shadow: 0 6px 14px -2px var(--job-accent-glow, rgba(13, 18, 32, 0.16)),
+              inset 0 1px 0 rgba(255, 255, 255, 0.28);
 }
 
 .job__headings { flex: 1; min-width: 0; }
 
 .job__title {
-  font-size: var(--text-lg);
-  font-weight: var(--weight-bold);
-  letter-spacing: -0.02em;
-  line-height: 1.25;
+  font-size: 1.2rem;
+  font-weight: var(--weight-extrabold);
+  letter-spacing: -0.024em;
+  line-height: 1.22;
 }
 
 .job__employer {
@@ -628,6 +689,8 @@
 
 /* ---- Salary, given its own band: it is what people scan for ---------- */
 
+/* Salary is what people scan for, so it gets an accent chip in the sector
+   colour rather than a grey strip. */
 .job__salary {
   display: flex;
   align-items: center;
@@ -635,15 +698,19 @@
   gap: var(--space-3);
   margin: 0 var(--space-4) var(--space-3);
   padding: var(--space-3) var(--space-4);
-  background: var(--surface-2);
+  background: var(--surface-1);
+  border: 1px solid var(--line-hairline);
+  border-left: 4px solid var(--job-accent);
   border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xs);
 }
 
 .job__salary-figure {
-  font-size: var(--text-md);
-  font-weight: var(--weight-bold);
-  letter-spacing: -0.02em;
+  font-size: 1.25rem;
+  font-weight: var(--weight-extrabold);
+  letter-spacing: -0.025em;
   font-variant-numeric: tabular-nums;
+  color: var(--job-accent);
 }
 
 .job__salary-unit {
@@ -1692,11 +1759,16 @@ select.field__control {
   }
 
   .stat { min-width: 0; padding: var(--space-3); }
+  .stat__icon { display: none; }
   .stat__value { font-size: var(--text-lg); }
   .stat__label { font-size: 10px; letter-spacing: 0.05em; }
 
   .toolbar { margin-top: calc(var(--space-8) * -1); }
   .toolbar__meta { margin-left: 0; }
+
+  /* Three selects wrapping at their natural widths looked ragged under the
+     search box; on a phone each takes a full row instead. */
+  .toolbar .select { flex: 1 1 100%; width: 100%; }
   .modal { padding: 0; place-items: end center; }
 
   .modal__panel {

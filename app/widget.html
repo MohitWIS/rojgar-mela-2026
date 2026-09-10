@@ -10,6 +10,13 @@
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/widget.css">
 
+  <!-- Display face. tokens.css falls back to the system stack if this is
+       ever blocked, so the page never depends on it loading. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+
   <!-- JS API v2. Namespaces: DATA / META / FILE / PUBLISH / UTIL.
        There is no ZOHO.CREATOR.init() in v2 — that was v1 only. -->
   <script src="https://js.zohostatic.com/creator/widgets/version/2.0/widgetsdk-min.js"></script>
@@ -37,10 +44,10 @@
         <a class="btn btn--secondary btn--sm" href="my-applications.html">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-            <circle cx="9" cy="7" r="4" />
+            <path d="M3 21h18M5 21V7l7-4 7 4v14" />
+            <path d="M9 9h.01M15 9h.01M9 13h.01M15 13h.01M9 17h.01M15 17h.01" />
           </svg>
-          Employer login
+          Organisation login
         </a>
       </div>
     </header>
@@ -57,23 +64,50 @@
           </div>
           <h1 class="hero__title">Find work that<br><em>works for you</em></h1>
           <p class="hero__sub">
-            Verified openings from NSDC partner employers across every sector.
+            Verified openings from NSDC partner organisations across every sector.
             Apply in under a minute — all you need is your resume.
           </p>
         </div>
 
         <div class="stats">
           <div class="stat stat--lime">
-            <div class="stat__value" id="statOpen">—</div>
-            <div class="stat__label">Open positions</div>
+            <div class="stat__icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+                stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="7" width="20" height="14" rx="2" />
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+              </svg>
+            </div>
+            <div class="stat__text">
+              <div class="stat__value" id="statOpen">—</div>
+              <div class="stat__label">Open positions</div>
+            </div>
           </div>
           <div class="stat stat--cyan">
-            <div class="stat__value" id="statEmployers">—</div>
-            <div class="stat__label">Employers</div>
+            <div class="stat__icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 21h18M5 21V7l7-4 7 4v14" />
+                <path d="M9 9h.01M15 9h.01M9 13h.01M15 13h.01M9 17h.01M15 17h.01" />
+              </svg>
+            </div>
+            <div class="stat__text">
+              <div class="stat__value" id="statEmployers">—</div>
+              <div class="stat__label">Organisations</div>
+            </div>
           </div>
           <div class="stat stat--green">
-            <div class="stat__value" id="statNew">—</div>
-            <div class="stat__label">Added this week</div>
+            <div class="stat__icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 17l6-6 4 4 8-8" />
+                <path d="M14 7h7v7" />
+              </svg>
+            </div>
+            <div class="stat__text">
+              <div class="stat__value" id="statNew">—</div>
+              <div class="stat__label">Added this week</div>
+            </div>
           </div>
         </div>
       </div>
@@ -94,7 +128,7 @@
               </svg>
             </span>
             <input class="search__input" id="search" type="search" autocomplete="off"
-              placeholder="Search by role, employer, skill or city…" aria-label="Search jobs">
+              placeholder="Search by role, organisation, skill or city…" aria-label="Search jobs">
             <button class="search__clear u-hide" id="searchClear" type="button" aria-label="Clear search">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                 stroke-linecap="round" aria-hidden="true">
